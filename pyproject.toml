@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "python-best-practices"
 version = "0.1.0"
-description = ""
+description = "Showcase of some of the Python best practices I've learned at work"
 authors = ["Tim Hilt <timhilt@live.de>"]
 readme = "README.md"
 
