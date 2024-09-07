@@ -13,12 +13,14 @@ from python_best_practices.common.types import User
 
 class UserGetter(Protocol):
     @staticmethod
-    async def get_user() -> User: ...
+    async def get_user(id: int) -> User: ...
 
 
-async def get_name(getter: UserGetter):
-    # Not a good showcase for using Protocols, as the function isn't really doing anything with the data
-    return await getter.get_user()
+# TODO: 500 when not found; should really return 404
+async def get_name(getter: UserGetter, id: int):
+    user = await getter.get_user(id)
+    name = user.name
+    return name
 
 
 ROUTES: list[ControllerRouterHandler] = []
@@ -30,21 +32,21 @@ def register_route(func: ControllerRouterHandler):
 
 
 @register_route
-@get("/from-shell")
-async def from_shell() -> User:
-    return await get_name(ShellUserGetter)
+@get("/name/from-shell/{id: int}")
+async def from_shell(id: int) -> str:
+    return await get_name(ShellUserGetter, id)
 
 
 @register_route
-@get("/from-http")
-async def from_http() -> User:
-    return await get_name(HttpUserGetter)
+@get("/name/from-http/{id: int}")
+async def from_http(id: int) -> str:
+    return await get_name(HttpUserGetter, id)
 
 
 @register_route
-@get("/from-file")
-async def from_file() -> User:
-    return await get_name(FileUserGetter)
+@get("/name/from-file/{id: int}")
+async def from_file(id: int) -> str:
+    return await get_name(FileUserGetter, id)
 
 
 @register_route
