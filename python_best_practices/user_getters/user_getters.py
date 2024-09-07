@@ -1,13 +1,14 @@
 import asyncio
 import json
-from typing import Any
 
 import httpx
 
+from python_best_practices.common.types import User, map_dict_to_dataclass
 
-class ShellDataGetter:
+
+class ShellUserGetter:
     @staticmethod
-    async def get_data() -> dict[str, Any]:
+    async def get_user() -> User:
         process = await asyncio.create_subprocess_exec(
             "curl",
             "https://jsonplaceholder.typicode.com/users/1",
@@ -15,21 +16,22 @@ class ShellDataGetter:
         )
 
         stdout, _ = await process.communicate()
-        return json.loads(stdout)
+        user = map_dict_to_dataclass(json.loads(stdout), User)
+        return user
 
 
-class HttpDataGetter:
+class HttpUserGetter:
     @staticmethod
-    async def get_data() -> dict[str, Any]:
+    async def get_user() -> User:
         async with httpx.AsyncClient() as client:
-            r = await client.get("https://www.example.com/")
-            return r.json()
+            r = await client.get("https://jsonplaceholder.typicode.com/users/1")
+            user = map_dict_to_dataclass(r.json(), User)
+            return user
 
 
-class FileDataGetter:
+class FileUserGetter:
     @staticmethod
-    async def get_data() -> dict[str, Any]:
-        await asyncio.sleep(0.05)
+    async def get_user() -> User:
         data = {
             "id": 1,
             "name": "Leanne Graham",
@@ -50,4 +52,5 @@ class FileDataGetter:
                 "bs": "harness real-time e-markets",
             },
         }
-        return data
+        user = map_dict_to_dataclass(data, User)
+        return user

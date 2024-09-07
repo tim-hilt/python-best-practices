@@ -1,22 +1,24 @@
-from typing import Protocol, Any
+from typing import Protocol
 
 from litestar import Litestar, get
 from litestar.types import ControllerRouterHandler
 
-from python_best_practices.data_getters.data_getters import (
-    ShellDataGetter,
-    HttpDataGetter,
-    FileDataGetter,
+from python_best_practices.user_getters.user_getters import (
+    ShellUserGetter,
+    HttpUserGetter,
+    FileUserGetter,
 )
+from python_best_practices.common.types import User
 
 
-class DataGetter(Protocol):
+class UserGetter(Protocol):
     @staticmethod
-    async def get_data() -> dict[str, Any]: ...
+    async def get_user() -> User: ...
 
 
-async def get_data(getter: DataGetter):
-    return await getter.get_data()
+async def get_name(getter: UserGetter):
+    # Not a good showcase for using Protocols, as the function isn't really doing anything with the data
+    return await getter.get_user()
 
 
 ROUTES: list[ControllerRouterHandler] = []
@@ -29,20 +31,20 @@ def register_route(func: ControllerRouterHandler):
 
 @register_route
 @get("/from-shell")
-async def from_shell() -> dict[str, Any]:
-    return await get_data(ShellDataGetter)
+async def from_shell() -> User:
+    return await get_name(ShellUserGetter)
 
 
 @register_route
 @get("/from-http")
-async def from_http() -> dict[str, Any]:
-    return await get_data(HttpDataGetter)
+async def from_http() -> User:
+    return await get_name(HttpUserGetter)
 
 
 @register_route
 @get("/from-file")
-async def from_file() -> dict[str, Any]:
-    return await get_data(FileDataGetter)
+async def from_file() -> User:
+    return await get_name(FileUserGetter)
 
 
 @register_route
