@@ -7,7 +7,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - && \
     PATH="/root/.local/bin:$PATH" && \
     poetry config virtualenvs.in-project true && \
     poetry config virtualenvs.options.always-copy true && \
-    poetry install
+    poetry install --without dev
 
 FROM gcr.io/distroless/static-debian12
 
